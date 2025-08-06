@@ -6,7 +6,8 @@
   "author": "Tu Nombre <tu@correo.com>",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder"
+    "build": "electron-builder",
+    "build:win": "electron-builder --win"
   },
   "build": {
     "appId": "com.5470.wallet",
