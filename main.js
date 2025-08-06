@@ -28,23 +28,39 @@ function createWindow() {
   mainWindow.loadFile('index.html');
 }
 
-async function startNode() {
-  nodeProc = spawn(PYTHON_CMD, [NODE_SCRIPT], { cwd: __dirname });
-
-  nodeProc.stdout.on('data', data => {
-    const msg = data.toString().trim();
+function handleLine(type, line) {
+  const msg = line.trim();
+  if (!msg) return;
+  if (type === 'stdout') {
     console.log('[NODE LOG]', msg);
     mainWindow?.webContents.send('node-log', msg);
     if (msg.includes('Bloque minado')) {
       mainWindow?.webContents.send('block-mined', msg);
     }
-  });
-
-  nodeProc.stderr.on('data', data => {
-    const msg = data.toString().trim();
+  } else {
     console.error('[NODE ERR]', msg);
     mainWindow?.webContents.send('node-log', `[ERR] ${msg}`);
+  }
+}
+
+function watchStream(stream, type) {
+  let buffer = '';
+  stream.on('data', chunk => {
+    buffer += chunk.toString();
+    const lines = buffer.split(/\r?\n/);
+    buffer = lines.pop();
+    lines.forEach(line => handleLine(type, line));
   });
+  stream.on('close', () => {
+    if (buffer.length) handleLine(type, buffer);
+  });
+}
+
+async function startNode() {
+  nodeProc = spawn(PYTHON_CMD, [NODE_SCRIPT], { cwd: __dirname });
+
+  watchStream(nodeProc.stdout, 'stdout');
+  watchStream(nodeProc.stderr, 'stderr');
 
   nodeProc.on('exit', code => {
     console.log(`[NODE] terminado con código ${code}`);

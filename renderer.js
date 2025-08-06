@@ -4,20 +4,23 @@ const statusEl = document.getElementById('node-status');
 const blocksListEl = document.getElementById('blocks-list');
 const logEl = document.getElementById('log');
 const langSelect = document.getElementById('lang-select');
+const sendBtn = document.getElementById('send-btn');
+const receiveBtn = document.getElementById('receive-btn');
+const txsBtn = document.getElementById('txs-btn');
 
 let currentAddress = null;
 let currentLang = 'es';
 
 // Diccionario multi-idioma
 const translations = {
-  es: { address: "Dirección", balance: "Saldo", node: "Estado nodo", waiting: "Esperando minería...", block: "Bloque" },
-  en: { address: "Address", balance: "Balance", node: "Node status", waiting: "Waiting for mining...", block: "Block" },
-  fr: { address: "Adresse", balance: "Solde", node: "État du nœud", waiting: "En attente de minage...", block: "Bloc" },
-  de: { address: "Adresse", balance: "Kontostand", node: "Node-Status", waiting: "Warten auf Mining...", block: "Block" },
-  zh: { address: "地址", balance: "余额", node: "节点状态", waiting: "等待挖矿...", block: "区块" },
-  ja: { address: "アドレス", balance: "残高", node: "ノード状態", waiting: "マイニング待機中...", block: "ブロック" },
-  ru: { address: "Адрес", balance: "Баланс", node: "Статус узла", waiting: "Ожидание майнинга...", block: "Блок" },
-  ar: { address: "العنوان", balance: "الرصيد", node: "حالة العقدة", waiting: "في انتظار التعدين...", block: "كتلة" }
+  es: { address: "Dirección", balance: "Saldo", node: "Estado nodo", waiting: "Esperando minería...", block: "Bloque", send: "Enviar", receive: "Recibir", transactions: "Transacciones" },
+  en: { address: "Address", balance: "Balance", node: "Node status", waiting: "Waiting for mining...", block: "Block", send: "Send", receive: "Receive", transactions: "Transactions" },
+  fr: { address: "Adresse", balance: "Solde", node: "État du nœud", waiting: "En attente de minage...", block: "Bloc", send: "Envoyer", receive: "Recevoir", transactions: "Transactions" },
+  de: { address: "Adresse", balance: "Kontostand", node: "Node-Status", waiting: "Warten auf Mining...", block: "Block", send: "Senden", receive: "Empfangen", transactions: "Transaktionen" },
+  zh: { address: "地址", balance: "余额", node: "节点状态", waiting: "等待挖矿...", block: "区块", send: "发送", receive: "接收", transactions: "交易" },
+  ja: { address: "アドレス", balance: "残高", node: "ノード状態", waiting: "マイニング待機中...", block: "ブロック", send: "送信", receive: "受信", transactions: "取引" },
+  ru: { address: "Адрес", balance: "Баланс", node: "Статус узла", waiting: "Ожидание майнинга...", block: "Блок", send: "Отправить", receive: "Получить", transactions: "Транзакции" },
+  ar: { address: "العنوان", balance: "الرصيد", node: "حالة العقدة", waiting: "في انتظار التعدين...", block: "كتلة", send: "إرسال", receive: "استلام", transactions: "المعاملات" }
 };
 
 function setLanguage(lang) {
@@ -25,6 +28,9 @@ function setLanguage(lang) {
   document.querySelector('label[for="wallet-address"]').textContent = translations[lang].address;
   document.querySelector('label[for="wallet-balance"]').textContent = translations[lang].balance;
   document.querySelector('label[for="node-status"]').textContent = translations[lang].node;
+  sendBtn.innerHTML = `💸 ${translations[lang].send}`;
+  receiveBtn.innerHTML = `📥 ${translations[lang].receive}`;
+  txsBtn.innerHTML = `📜 ${translations[lang].transactions}`;
   appendLog(`🌐 Idioma cambiado a ${lang}`);
 }
 
@@ -69,11 +75,19 @@ function performCoinJoin() { appendLog("🔄 CoinJoin simulado ejecutado"); }
 // --- VPN simulada ---
 function connectVPN() { appendLog("🔐 VPN descentralizada simulada activa"); }
 
+// --- Acciones de wallet simuladas ---
+function sendTransaction() { appendLog("💸 Transacción enviada (simulada)"); }
+function receiveAddress() { appendLog("📥 Dirección generada (simulada)"); }
+function viewTransactions() { appendLog("📜 Mostrando transacciones (simulado)"); }
+
 window.electron.on('node-log', (_, msg) => appendLog(`NODE: ${msg}`));
 window.electron.on('block-mined', (_, msg) => { appendLog(`⛏ ${msg}`); loadBalance(); loadBlocks(); });
 window.electron.on('rpc-ready', () => { statusEl.textContent = "✅ Nodo listo y minando..."; });
 
 langSelect.addEventListener('change', e => setLanguage(e.target.value));
+sendBtn.addEventListener('click', sendTransaction);
+receiveBtn.addEventListener('click', receiveAddress);
+txsBtn.addEventListener('click', viewTransactions);
 
 loadWalletAddress();
 loadBlocks();

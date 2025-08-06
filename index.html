@@ -4,44 +4,61 @@
   <meta charset="UTF-8">
   <title>5470 Blockchain Wallet</title>
   <style>
-    body { font-family: 'Segoe UI', sans-serif; background: #0d1117; color: #c9d1d9; text-align: center; }
-    h1 { color: #58a6ff; }
-    #info, #lang { background: #161b22; padding: 20px; border-radius: 12px; width: 80%; margin: auto; margin-bottom: 15px; }
-    #log { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 10px; width: 80%; height: 250px; overflow-y: auto; white-space: pre-wrap; font-size: 12px; margin: auto; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; }
+    header { background: #161b22; padding: 20px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    h1 { color: #58a6ff; margin: 0; }
+    main { padding: 20px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
+    #info, #lang, #controls, #recent-blocks, #live-log { background: #161b22; padding: 20px; border-radius: 12px; width: 80%; max-width: 800px; }
+    #log { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 10px; height: 250px; overflow-y: auto; white-space: pre-wrap; font-size: 12px; }
     span.value { color: #58a6ff; font-weight: bold; }
+    #controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+    button { background: #238636; border: none; color: #fff; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; }
+    button:hover { background: #2ea043; }
   </style>
 </head>
 <body>
-  <h1>5470 Blockchain Wallet</h1>
+  <header>
+    <h1>5470 Blockchain Wallet</h1>
+  </header>
+  <main>
+    <div id="lang">
+      🌐 Idioma:
+      <select id="lang-select">
+        <option value="es">Español</option>
+        <option value="en">English</option>
+        <option value="fr">Français</option>
+        <option value="de">Deutsch</option>
+        <option value="zh">中文</option>
+        <option value="ja">日本語</option>
+        <option value="ru">Русский</option>
+        <option value="ar">العربية</option>
+      </select>
+    </div>
 
-  <div id="lang">
-    🌐 Idioma:
-    <select id="lang-select">
-      <option value="es">Español</option>
-      <option value="en">English</option>
-      <option value="fr">Français</option>
-      <option value="de">Deutsch</option>
-      <option value="zh">中文</option>
-      <option value="ja">日本語</option>
-      <option value="ru">Русский</option>
-      <option value="ar">العربية</option>
-    </select>
-  </div>
+    <div id="info">
+      <p><label for="wallet-address">Dirección</label>: <span id="wallet-address" class="value">Cargando...</span></p>
+      <p><label for="wallet-balance">Saldo</label>: <span id="wallet-balance" class="value">0</span> tokens</p>
+      <p><label for="node-status">Estado nodo</label>: <span id="node-status" class="value">Iniciando...</span></p>
+    </div>
 
-  <div id="info">
-    <p><label for="wallet-address">Dirección</label>: <span id="wallet-address" class="value">Cargando...</span></p>
-    <p><label for="wallet-balance">Saldo</label>: <span id="wallet-balance" class="value">0</span> tokens</p>
-    <p><label for="node-status">Estado nodo</label>: <span id="node-status" class="value">Iniciando...</span></p>
-  </div>
+    <div id="controls">
+      <button id="send-btn">💸 Enviar</button>
+      <button id="receive-btn">📥 Recibir</button>
+      <button id="txs-btn">📜 Transacciones</button>
+      <button onclick="performCoinJoin()">🔄 CoinJoin</button>
+      <button onclick="connectVPN()">🔐 Conectar VPN descentralizada</button>
+    </div>
 
-  <h2>⛏ Bloques recientes</h2>
-  <ul id="blocks-list"></ul>
+    <div id="recent-blocks">
+      <h2>⛏ Bloques recientes</h2>
+      <ul id="blocks-list"></ul>
+    </div>
 
-  <h2>📜 Logs en vivo</h2>
-  <pre id="log">Esperando minería...</pre>
-
-  <button onclick="performCoinJoin()">🔄 CoinJoin</button>
-  <button onclick="connectVPN()">🔐 Conectar VPN descentralizada</button>
+    <div id="live-log">
+      <h2>📜 Logs en vivo</h2>
+      <pre id="log">Esperando minería...</pre>
+    </div>
+  </main>
 
   <script src="renderer.js"></script>
 </body>
